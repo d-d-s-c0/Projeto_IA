@@ -58,12 +58,13 @@ class game: #defines a new game
             if (col == "."): return False #means there is still an empty position in the top row
         return True #if the top row is full, then the entire board is full
     
-    def check_for_win(self):
+    def check_for_win(self): #checks if there is any 4-in-row in our current board
+
         for row in range(0, len(self.board)): #test each row
             test = check(self.board[row], self.cur_player)
             if (test != 0): 
                 self.end_game(test)
-                return
+                return True
 
         for col in range(0, len(self.board[0])): #test each column
             cur_col = []
@@ -72,11 +73,11 @@ class game: #defines a new game
             test = check(cur_col, self.cur_player)
             if (test != 0): 
                 self.end_game(test)
-                return
+                return True
         
         for row in range(0, len(self.board)): #test each diagonal
-            continue
-        return
+            continue #TODO
+        return False
     
     def invalid_command(self): #when a command is not recognized by the game
         clear_terminal()
@@ -159,12 +160,13 @@ class game: #defines a new game
         except: self.invalid_move()
         if (col < 1 or col > 7): self.invalid_move()
         elif (self.board[len(self.board) - 1][col - 1] == self.cur_player): 
-            for i in range(len(self.board) - 1, 0, -1):
+            for i in range(len(self.board) - 1, 0, -1): #shifts all discs above the removal one position down
                 self.board[i][col - 1] = self.board[i - 1][col - 1]
             self.board[0][col - 1] = "."
+            #check if this state has been visited before
             if (self.board_to_string() in self.board_history.keys()): self.board_history[self.board_to_string()] += 1
-            else: self.board_history[self.board_to_string()] = 1
-            self.check_for_win()
+            else: self.board_history[self.board_to_string()] = 1 #if not, mark it as visited once
+            if (self.check_for_win()): return
             self.change_player()
             self.make_a_move()
         else: self.invalid_move()
@@ -186,14 +188,16 @@ class game: #defines a new game
                 i += 1
                 clear_terminal()
                 self.print_board()
+            #check if this state has been visited before
             if (self.board_to_string() in self.board_history.keys()): self.board_history[self.board_to_string()] += 1
-            else: self.board_history[self.board_to_string()] = 1
+            else: self.board_history[self.board_to_string()] = 1 #if not, mark it as visited once
             time.sleep(0.5)
-            self.check_for_win()
+            if (self.check_for_win()): return
             self.change_player()
             self.make_a_move()
         else: self.invalid_move()
         return
+    
     def draw(self): #declares a draw, if it is possible according to game rules
         if (self.board_is_full()): self.end_game(0) #if the board is full, then draw.
         elif (self.board_history[self.board_to_string()] == 3): self.end_game(0) #if we have been 3 times in the current state of the board, then draw.

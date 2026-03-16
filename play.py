@@ -42,9 +42,30 @@ while(True):
             print("Press ENTER to return")
             input()
         case("3"):
-            clear_terminal()
-            game1 = game(False)
-            game1.make_a_move()
+            while(True):
+                clear_terminal()
+                print("Select game mode:")
+                print()
+                print("1. PLAYER VS PLAYER\n2. PLAYER VS COMPUTER\n3. COMPUTER VS COMPUTER\n4. RETURN TO MENU")
+                match(input()):
+                    case("1"):
+                        clear_terminal()
+                        game1 = game(False)
+                        game1.make_a_move()
+                    case("2"):
+                        clear_terminal()
+                        print("Under construction...")
+                        time.sleep(2)
+                    case("3"):
+                        clear_terminal()
+                        print("Under construction...")
+                        time.sleep(2)
+                    case("4"):
+                        break
+                    case _:
+                        clear_terminal()
+                        print("Invalid command! Returning to GAME SELECTION...")
+                        time.sleep(2)
         case("4"):
             sys.exit("Goodbye!")
         case _: 
