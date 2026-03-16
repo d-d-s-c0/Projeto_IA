@@ -16,6 +16,9 @@ def start_player(rand): #defines starting player. By default it is O, but can be
 def clear_terminal(): #clears the terminal
     os.system('cls' if os.name == 'nt' else 'clear')
 
+def check(row, char):
+    return 
+
 class game: #defines a new game
     def __init__(self, rand):
         self.board = new_board() #we start with an empty board
@@ -26,14 +29,14 @@ class game: #defines a new game
         if (self.cur_player == "O"): self.cur_player = "X"
         else: self.cur_player = "O"
     
-    def print_board(self): #prints the current state of thee board
+    def print_board(self): #prints the current state of the board
         print (self.board_to_string())
 
     def board_to_string(self): #turns the board into a string
         s = ""
         for row in range(0, len(self.board)):
             for col in range(0, len(self.board[row])):
-                s += self.board[row][col]
+                s += self.board[row][col] + " "
             s += "\n"
         return s
 
@@ -41,6 +44,27 @@ class game: #defines a new game
         for col in self.board[0]:
             if (col == "."): return False #means there is still an empty position in the top row
         return True #if the top row is full, then the entire board is full
+    
+    def check_for_win(self):
+        for row in range(0, len(self.board)): #test each row
+            test = check(self.board[row], self.cur_player)
+            if (test != 0): self.end_game(test)
+
+        for col in range(0, len(self.board[0])): #test each column
+            cur_col = []
+            for row in range(0, len(self.board)):
+                cur_col += self.board[row][col]
+            test = check(cur_col, self.cur_player)
+            if (test != 0): self.end_game(test)
+        
+        for row in range(0, len(self.board)): #test each diagonal
+            diag = ""
+            for i in range (0, len(self.board[row] - 3)):
+                k = 0
+                for col in range(i, len(self.board[row])):
+                    if (row + k >= len(self.board)): break
+                    diag += self.board[row+k][col+k]
+                    k += 1
     
     def invalid_command(self): #when a command is not recognized by the game
         clear_terminal()
@@ -59,7 +83,6 @@ class game: #defines a new game
         self.make_a_move()
     
     def check_commands(self): #to check the command notation
-        input()
         clear_terminal()
         print("To remove a disc from the bottom row, use R followed by the column index between 1 and 7.")
         print("For example, R5 removes the bottom disc from the 5th column.")
@@ -69,9 +92,11 @@ class game: #defines a new game
         print("For example, I3 inserts a disc in the top of the 3rd column.")
         print("NOTE: The disc can only be inserted if the column is not full yet.")
         print()
-        print("To declare a DRAW, use D.")
+        print("To declare a draw, use D.")
         print()
         print("To restart game, use RESTART")
+        print()
+        print("To end game and return to menu, use QUIT")
         print()
         print("Press ENTER to return")
         input()
@@ -96,17 +121,24 @@ class game: #defines a new game
         self.make_a_move()
     
     def end_game(self, result): #produces an ending message to the game (result 1 means cur_player won | 0 means draw | -1 means cur_player lost)
+        clear_terminal()
+        self.print_board()
         if (result == 1): print("Player " + self.cur_player + " is the winner!")
         elif (result == 0): print("It's a draw!")
         else: #if the current player has lost, then change player. then, the new current player has won.
             self.change_player()
             print("Player " + self.cur_player + " is the winner!")
+        print()
+        print("Use RESTART or QUIT.")
+        command = input()
+        if (command == "RESTART"): self.restart(False)
+        elif (command == "QUIT"): return
     
     def remove(self, col): #removes, if possible, a disc from the last row, in position col
         try: col = int(col)
         except: self.invalid_move()
         if (col < 1 or col > 7): self.invalid_move()
-        if (self.board[len(self.board) - 1][col - 1] == self.cur_player): 
+        elif (self.board[len(self.board) - 1][col - 1] == self.cur_player): 
             for i in range(len(self.board) - 1, 0, -1):
                 self.board[i][col - 1] = self.board[i - 1][col - 1]
             self.board[0][col - 1] = "."
@@ -120,29 +152,36 @@ class game: #defines a new game
         try: col = int(col)
         except: self.invalid_move()
         if (col < 1 or col > 7): self.invalid_move()
-        if (self.board[0][col - 1] == "."): 
-            self.board[0][col - 1] = self.cur_player
+        elif (self.board[0][col - 1] == "."): #if the column col still has space...
+            self.board[0][col - 1] = self.cur_player #insert disc on top of the column
             i = 0
-            while (i < 5 and self.board[i+1][col - 1] == "."):
+            clear_terminal()
+            self.print_board()
+            while (i < 5 and self.board[i+1][col - 1] == "."): #make disc fall to the bottom
+                time.sleep(0.25)
                 self.board[i][col - 1] = "."
                 self.board[i+1][col - 1] = self.cur_player
                 i += 1
+                clear_terminal()
+                self.print_board()
             if (self.board_to_string() in self.board_history.keys()): self.board_history[self.board_to_string()] += 1
             else: self.board_history[self.board_to_string()] = 1
+            time.sleep(0.5)
             self.change_player()
             self.make_a_move()
         else: self.invalid_move()
+
     
     def draw(self): #declares a draw, if it is possible according to game rules
         if (self.board_is_full()): self.end_game(0) #if the board is full, then draw.
-        if (self.board_history[self.board_to_string()] == 3): self.end_game(0) #if we have been 3 times in the current state of the board, then draw.
+        elif (self.board_history[self.board_to_string()] == 3): self.end_game(0) #if we have been 3 times in the current state of the board, then draw.
         else: self.invalid_move() #else, draw is not playable yet.
 
     def restart(self, rand): #restarts the game
         self.__init__(rand)
         self.make_a_move()
-    
-    def make_a_move(self): #coordinates moves between players and reads commands from the terminal
+        
+    def make_a_move(self): #reads and interprets commands from the terminal
         clear_terminal()
         self.print_board()
         print("PLAYING NOW: " + self.cur_player)
@@ -150,8 +189,9 @@ class game: #defines a new game
         if command == "COMMANDS": self.check_commands()
         elif command == "RULES": self.check_rules()
         elif command == "RESTART": self.restart(False)
+        elif command == "QUIT": return #ends this game session
+        elif len(command) == 0: self.make_a_move()
         elif command[0] == "R" and len(command) == 2: self.remove(command[1])
         elif command[0] == "I" and len(command) == 2: self.insert(command[1])
-        elif command[0] == "D" and len(command) == 1: self.draw()
+        elif command == "D": self.draw()
         else: self.invalid_command()
-
