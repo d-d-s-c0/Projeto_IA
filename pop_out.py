@@ -3,7 +3,9 @@ import random
 import time
 
 def new_board(): #initializes an empty board
-    return [["."]*7]*6
+    b = []
+    for i in range(0,6): b += [["."]*7]
+    return b
 
 def start_player(rand): #defines starting player. By default it is O, but can be randomized too.
     if (rand == False): return "O"
@@ -29,11 +31,10 @@ class game: #defines a new game
 
     def board_to_string(self): #turns the board into a string
         s = ""
-        for row in self.board:
-            s2 = ""
-            for col in row:
-                s2+= col
-            s+= s2 + "\n"
+        for row in range(0, len(self.board)):
+            for col in range(0, len(self.board[row])):
+                s += self.board[row][col]
+            s += "\n"
         return s
 
     def board_is_full(self): #checks if the board is completely full
@@ -119,25 +120,27 @@ class game: #defines a new game
         try: col = int(col)
         except: self.invalid_move()
         if (col < 1 or col > 7): self.invalid_move()
-        i = 0
-        while (True):
-            if(self.board[i + 1][col - 1] != "."): 
-                self.board[i][col - 1] = self.cur_player
-                if (self.board_to_string() in self.board_history.keys()): self.board_history[self.board_to_string()] += 1
-                else: self.board_history[self.board_to_string()] = 1
-                self.change_player()
-                self.make_a_move()
-            else: i += 1
+        if (self.board[0][col - 1] == "."): 
+            self.board[0][col - 1] = self.cur_player
+            i = 0
+            while (i < 5 and self.board[i+1][col - 1] == "."):
+                self.board[i][col - 1] = "."
+                self.board[i+1][col - 1] = self.cur_player
+                i += 1
+            if (self.board_to_string() in self.board_history.keys()): self.board_history[self.board_to_string()] += 1
+            else: self.board_history[self.board_to_string()] = 1
+            self.change_player()
+            self.make_a_move()
         else: self.invalid_move()
-
     
     def draw(self): #declares a draw, if it is possible according to game rules
-        if (self.board_is_full()): self.end_game(0)
-        if (self.board_history[self.board_to_string()] == 3): self.end_game(0)
-        else: self.invalid_move()
+        if (self.board_is_full()): self.end_game(0) #if the board is full, then draw.
+        if (self.board_history[self.board_to_string()] == 3): self.end_game(0) #if we have been 3 times in the current state of the board, then draw.
+        else: self.invalid_move() #else, draw is not playable yet.
 
     def restart(self, rand): #restarts the game
         self.__init__(rand)
+        self.make_a_move()
     
     def make_a_move(self): #coordinates moves between players and reads commands from the terminal
         clear_terminal()
