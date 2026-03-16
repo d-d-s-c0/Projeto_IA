@@ -170,7 +170,6 @@ class game: #defines a new game
             self.change_player()
             self.make_a_move()
         else: self.invalid_move()
-
     
     def draw(self): #declares a draw, if it is possible according to game rules
         if (self.board_is_full()): self.end_game(0) #if the board is full, then draw.
