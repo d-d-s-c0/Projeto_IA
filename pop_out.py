@@ -2,32 +2,32 @@ import os
 import random 
 import time
 
-def new_board():
+def new_board(): #initializes an empty board
     return [["."]*7]*6
 
-def start_player(rand):
+def start_player(rand): #defines starting player. By default it is O, but can be randomized too.
     if (rand == False): return "O"
     else: 
         player = ["O","X"]
         return player[random.randint(0,1)]
 
-def clear_terminal(): 
+def clear_terminal(): #clears the terminal
     os.system('cls' if os.name == 'nt' else 'clear')
 
-class game:
+class game: #defines a new game
     def __init__(self, rand):
-        self.board = new_board()
-        self.board_history = {self.board_to_string(): 1}
-        self.cur_player = start_player(rand)
+        self.board = new_board() #we start with an empty board
+        self.board_history = {self.board_to_string(): 1} #the board history includes only the empty board, which we "visited" once
+        self.cur_player = start_player(rand) #we define the starting player
 
-    def change_player(self):
+    def change_player(self): #changes the player
         if (self.cur_player == "O"): self.cur_player = "X"
         else: self.cur_player = "O"
     
-    def print_board(self):
+    def print_board(self): #prints the current state of thee board
         print (self.board_to_string())
 
-    def board_to_string(self):
+    def board_to_string(self): #turns the board into a string
         s = ""
         for row in self.board:
             s2 = ""
@@ -36,12 +36,12 @@ class game:
             s+= s2 + "\n"
         return s
 
-    def board_is_full(self):
-        for col in self.board[0]: 
-            if (col == "."): return False
-        return True
+    def board_is_full(self): #checks if the board is completely full
+        for col in self.board[0]:
+            if (col == "."): return False #means there is still an empty position in the top row
+        return True #if the top row is full, then the entire board is full
     
-    def invalid_command(self):
+    def invalid_command(self): #when a command is not recognized by the game
         clear_terminal()
         self.print_board()
         print("Invalid command. To check command rules, use COMMANDS.")
@@ -49,7 +49,7 @@ class game:
         input()
         self.make_a_move()
     
-    def invalid_move(self):
+    def invalid_move(self): #when a correct command corresponds to a move that cannot be played at the current state of the game
         clear_terminal()
         self.print_board()
         print("Invalid move. To check game rules, use RULES")
@@ -57,7 +57,7 @@ class game:
         input()
         self.make_a_move()
     
-    def check_commands(self):
+    def check_commands(self): #to check the command notation
         input()
         clear_terminal()
         print("To remove a disc from the bottom row, use R followed by the column index between 1 and 7.")
@@ -76,7 +76,7 @@ class game:
         input()
         self.make_a_move()
 
-    def check_rules(self):
+    def check_rules(self): #to check the rules of the game
         clear_terminal()
         print("POP OUT is a version of CONNECT 4 with some changes.")
         print()
@@ -91,18 +91,17 @@ class game:
         print("3. If the same state is repeated three times, either player can declare the game drawn.")
         print()
         print("Press ENTER to return")
-        time.sleep(1)
         input()
         self.make_a_move()
     
-    def end_game(self, result):
+    def end_game(self, result): #produces an ending message to the game (result 1 means cur_player won | 0 means draw | -1 means cur_player lost)
         if (result == 1): print("Player " + self.cur_player + " is the winner!")
         elif (result == 0): print("It's a draw!")
-        else:
+        else: #if the current player has lost, then change player. then, the new current player has won.
             self.change_player()
             print("Player " + self.cur_player + " is the winner!")
     
-    def remove(self, col):
+    def remove(self, col): #removes, if possible, a disc from the last row, in position col
         try: col = int(col)
         except: self.invalid_move()
         if (col < 1 or col > 7): self.invalid_move()
@@ -116,27 +115,31 @@ class game:
             self.make_a_move()
         else: self.invalid_move()
     
-    def insert(self, col):
+    def insert(self, col): #inserts, if possible, a disc in the column col
         try: col = int(col)
         except: self.invalid_move()
         if (col < 1 or col > 7): self.invalid_move()
-        if(self.board[0][col - 1] == "."):
-            self.board[0][col - 1] = self.cur_player
-            if (self.board_to_string() in self.board_history.keys()): self.board_history[self.board_to_string()] += 1
-            else: self.board_history[self.board_to_string()] = 1
-            self.change_player()
-            self.make_a_move()
+        i = 0
+        while (True):
+            if(self.board[i + 1][col - 1] != "."): 
+                self.board[i][col - 1] = self.cur_player
+                if (self.board_to_string() in self.board_history.keys()): self.board_history[self.board_to_string()] += 1
+                else: self.board_history[self.board_to_string()] = 1
+                self.change_player()
+                self.make_a_move()
+            else: i += 1
         else: self.invalid_move()
+
     
-    def draw(self):
+    def draw(self): #declares a draw, if it is possible according to game rules
         if (self.board_is_full()): self.end_game(0)
         if (self.board_history[self.board_to_string()] == 3): self.end_game(0)
         else: self.invalid_move()
 
-    def restart(self, rand):
+    def restart(self, rand): #restarts the game
         self.__init__(rand)
     
-    def make_a_move(self):
+    def make_a_move(self): #coordinates moves between players and reads commands from the terminal
         clear_terminal()
         self.print_board()
         print("PLAYING NOW: " + self.cur_player)
