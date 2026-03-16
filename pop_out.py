@@ -219,8 +219,8 @@ class game: #defines a new game
         elif command == "RESTART": self.restart(False)
         elif command == "QUIT": return #ends this game session
         elif len(command) == 0: self.make_a_move()
-        elif command[0] == "R" and len(command) == 2: self.remove(command[1])
-        elif command[0] == "I" and len(command) == 2: self.insert(command[1])
-        elif command == "D": self.draw()
+        elif (command[0] == "R" or command[0] == "r") and len(command) == 2: self.remove(command[1]) 
+        elif (command[0] == "I" or command[0] == "i") and len(command) == 2: self.insert(command[1])
+        elif (command == "D" or command[0] == "d"): self.draw()
         else: self.invalid_command()
         return

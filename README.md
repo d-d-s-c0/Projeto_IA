@@ -1,7 +1,7 @@
 # POP OUT
 
 ## Introduction
-POP OUT is an adaptation of the well-know game Connect 4. The main change between these two games is that, in Pop Out, it is possible to remove discs from the bottom row, as well as inserting them. 
+POP OUT is an adaptation of the well-known game Connect 4. The main change between these two games is that, in Pop Out, it is possible to remove discs from the bottom row, as well as inserting them. 
 
 There are three modes:
 
