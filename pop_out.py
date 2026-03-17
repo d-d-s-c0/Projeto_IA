@@ -74,10 +74,55 @@ class game: #defines a new game
             if (test != 0): 
                 self.end_game(test)
                 return True
-        
-        for row in range(0, len(self.board)): #test each diagonal
-            continue #TODO
+                
+        # Test each diagonal
+        # We make a shift in the board deleting the elements that are not important
+        temp_board1 = copy.deepcopy(
+            self.board
+        )  # temp_board1 -> Board in normal version
+
+        temp_board2 = copy.deepcopy(self.board)  # temp_board2 -> Board rows in reversed
+        for i in range(0, len(self.board)):  # reversing -> temp_board2[]
+            temp_board2[i] = [x for x in reversed(temp_board2[i])]  # creat a reversed board of self
+
+        for row in range(0, len(self.board)):  # test each diagonal
+            if row < 3:
+                # Deletes elements in the board that are not analysed
+                # Deletes first half rows(left)
+                del temp_board1[row][: (2 - row)]
+                del temp_board2[row][: (2 - row)]
+                for i in range(0, 3 - row):
+                    # Adds neutral values in the oposite side to analyse like cols
+                    # Adds first half rows(rigth)
+                    temp_board1[row].append(".")
+                    temp_board2[row].append(".")
+            if row >= 3:
+                # Deletes second half rows (rigth)
+                del temp_board1[row][(2 - row) :]
+                del temp_board2[row][(2 - row) :]
+                for i in range(0, row - 2):
+                    # Adds second half rows (left)
+                    temp_board1[row].insert(0, ".")
+                    temp_board2[row].insert(0, ".")
+
+        for col in range(0, len(self.board[0])):
+            cur_col1 = []
+            cur_col2 = []
+            for row in range(0, len(self.board)):
+                cur_col1 += temp_board1[row][col]
+                cur_col2 += temp_board2[row][col]
+            test = check(cur_col1, self.cur_player)
+            test_ = check(cur_col2, self.cur_player)
+            if test != 0:
+                self.end_game(test)
+                return True
+            elif test_ != 0:
+                self.end_game(test_)
+                return True
+
         return False
+
+
     
     def invalid_command(self): #when a command is not recognized by the game
         clear_terminal()
