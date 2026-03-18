@@ -252,7 +252,7 @@ class game: #defines a new game
 
      if self.board_is_full():
         self.end_game(0)
-     elif self.board_history[self.board_to_string()] >= 3:
+     elif self.board_history[self.board_to_string()] == 3:
         self.end_game(0)
      else:
         self.invalid_move()
