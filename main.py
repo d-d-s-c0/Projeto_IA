@@ -1,4 +1,6 @@
 from pop_out2 import game, clear_terminal
+from popout_state import PopOutState
+from montecarlo import monte_carlo_move
 import sys
 import time
 
@@ -64,8 +66,34 @@ while True:
 
                     case "3":
                         clear_terminal()
-                        print("Under construction...")
-                        time.sleep(2)
+                        state = PopOutState()
+              
+                        while not state.is_terminal():
+                            clear_terminal()
+                            print(state.board_to_string())
+                            print("Current player:", state.current_player)
+
+                            move = monte_carlo_move(state, simulations_per_move=20)
+                            print("Computer plays:", move)
+                            time.sleep(1.5)
+                            state.apply_move(move)
+                            time.sleep(1.5)
+                            print("Board after move:")
+                            print(state.board_to_string())
+                            time.sleep(2)
+
+                            
+
+                        clear_terminal()
+                        print(state.board_to_string())
+
+                        if state.winner is None:
+                         print("It's a draw!")
+                        else:
+                            print("Winner:", state.winner)
+
+                        input("Press ENTER to return")
+
 
                     case "4":
                         break

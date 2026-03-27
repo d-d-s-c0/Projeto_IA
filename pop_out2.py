@@ -282,7 +282,6 @@ class game: #defines a new game
             self.check_rules()
             continue
 
-        
         elif command.upper() == "RESTART":
             self.restart(False)
             return
