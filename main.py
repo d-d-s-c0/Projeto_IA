@@ -7,7 +7,6 @@ while True:
     print("Welcome to POP OUT!")
     print()
     print("1. CHECK COMMANDS\n2. CHECK RULES\n3. PLAY\n4. EXIT")
-
     match(input().strip()):
         case "1":
             clear_terminal()
@@ -27,7 +26,6 @@ while True:
             print()
             print("Press ENTER to return")
             input()
-
         case "2":
             clear_terminal()
             print("POP OUT is a version of CONNECT 4 with some changes.")
@@ -44,14 +42,12 @@ while True:
             print()
             print("Press ENTER to return")
             input()
-
         case "3":
             while True:
                 clear_terminal()
                 print("Select game mode:")
                 print()
                 print("1. PLAYER VS PLAYER\n2. PLAYER VS COMPUTER\n3. COMPUTER VS COMPUTER\n4. RETURN TO MENU")
-
                 match(input().strip()):
                     case "1":
                         clear_terminal()
@@ -61,23 +57,18 @@ while True:
                         clear_terminal()
                         print("Under construction...")
                         time.sleep(2)
-
                     case "3":
                         clear_terminal()
                         print("Under construction...")
                         time.sleep(2)
-
                     case "4":
                         break
-
                     case _:
                         clear_terminal()
                         print("Invalid command! Returning to GAME SELECTION...")
                         time.sleep(2)
-
         case "4":
             sys.exit("Goodbye!")
-
         case _:
             clear_terminal()
             print("Invalid command! Returning to MENU...")

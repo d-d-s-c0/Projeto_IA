@@ -2,7 +2,6 @@ import os # Provides functions to interact with the operating system (used here 
 import random # Used to generate random values (used here to randomly choose the starting player)
 import time ## Standard library module for time-related functions (used to control animation timing)
 
-
 def new_board(): #initializes an empty board(6 rows X 7 columns)
     b = []
     for i in range(0,6): b += [["."]*7]
