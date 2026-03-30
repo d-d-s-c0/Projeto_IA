@@ -28,7 +28,7 @@ Install Python:
 
     2. sudo apt install python3
 
-- MacOs: 1.brew install python
+- MacOs: brew install python
 
 ## Execution Guide
 The game can be initialized by executing the file play.py. There, by interacting with text menus through the terminal, all of the game's features will be accessible, as well as the rules and commands. 
