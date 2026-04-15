@@ -1,6 +1,7 @@
 from pop_out2 import game, clear_terminal
 from popout_state import PopOutState
 from montecarlo import monte_carlo_move
+
 import sys
 import time
 
@@ -67,7 +68,6 @@ while True:
                             clear_terminal()
                             print(state.board_to_string())
                             print("Current player:", state.current_player)
-
                             move = monte_carlo_move(state, simulations_per_move=20)
                             print("Computer plays:", move)
                             time.sleep(1.5)
