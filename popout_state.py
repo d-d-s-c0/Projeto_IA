@@ -30,7 +30,7 @@ class PopOutState:
         self.terminal = terminal
 
         if not self.board_history:
-            self.board_history[self.state_key()] = 1
+            self.board_history[self.board_to_string()] = 1
 
     def clone(self):
         return PopOutState(
@@ -70,7 +70,8 @@ class PopOutState:
                 moves.append(("R", col + 1))
 
         # Optional draw declaration
-        if self.board_is_full() or self.board_history.get(self.state_key(), 0) >= 3:
+        if self.board_is_full() or self.board_history.get(self.board_to_string(), 0) >= 3:
+
             moves.append(("D", None))
 
         return moves
@@ -135,7 +136,7 @@ class PopOutState:
         self.terminal = True
 
     def register_state(self):
-        key = self.state_key()
+        key = self.board_to_string()
         if key in self.board_history:
             self.board_history[key] += 1
         else:
