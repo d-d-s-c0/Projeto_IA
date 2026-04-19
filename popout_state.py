@@ -4,10 +4,8 @@
 
 import copy
 
-
 def new_board():
     return [["."] * 7 for _ in range(6)]
-
 
 def check(line, char):
     count = 0
@@ -46,9 +44,6 @@ class PopOutState:
         for row in self.board:
             s += " ".join(row) + "\n"
         return s
-
-    def state_key(self):
-        return self.board_to_string() + "TURN:" + self.current_player
 
     def change_player(self):
         self.current_player = "X" if self.current_player == "O" else "O"
@@ -194,7 +189,7 @@ class PopOutState:
         elif kind == "R":
             self.apply_remove(value)
         elif kind == "D":
-            if self.board_is_full() or self.board_history.get(self.state_key(), 0) >= 3:
+            if self.board_is_full() or self.board_history.get(self.board_to_string(), 0) >= 3:
                 self.winner = None
                 self.terminal = True
             else:
