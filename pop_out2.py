@@ -1,22 +1,22 @@
-import os # Provides functions to interact with the operating system (used here to clear the terminal)
-import random # Used to generate random values (used here to randomly choose the starting player)
-import time ## Standard library module for time-related functions (used to control animation timing)
+import os
+import random
+import time
 
-def new_board(): #initializes an empty board(6 rows X 7 columns)
+def new_board():
     b = []
     for i in range(0,6): b += [["."]*7]
     return b
 
-def start_player(rand): #defines starting player. By default it is O, but can be randomized too.
+def start_player(rand):
     if (rand == False): return "O"
     else: 
         player = ["O","X"]
         return player[random.randint(0,1)]
 
-def clear_terminal(): #clears the terminal
+def clear_terminal():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def check(line, char): #checks if there are 4 consecutive pieces in a line
+def check(line, char):
     count = 0
     for cell in line:
         if cell == char:
@@ -27,23 +27,23 @@ def check(line, char): #checks if there are 4 consecutive pieces in a line
             count = 0
     return False
 
-class game: #defines a new game
+class game:
     def __init__(self, rand):
-        self.board = new_board() #we start with an empty board
-        self.board_history = {self.board_to_string(): 1} #the board history includes only the empty board, which we "visited" once
-        self.cur_player = start_player(rand) #we define the starting player
-        self.running = True #controls the game loop
+        self.board = new_board()
+        self.board_history = {self.board_to_string(): 1}
+        self.cur_player = start_player(rand)
+        self.running = True
 
-    def change_player(self): #changes the player
+    def change_player(self):
         if (self.cur_player == "O"): self.cur_player = "X"
         else: self.cur_player = "O"
         return
     
-    def print_board(self): #prints the current state of the board
-        print (self.board_to_string())
+    def print_board(self):
+        print(self.board_to_string())
         return
 
-    def board_to_string(self): #turns the board into a string
+    def board_to_string(self):
         s = ""
         for row in range(0, len(self.board)):
             for col in range(0, len(self.board[row])):
@@ -51,84 +51,61 @@ class game: #defines a new game
             s += "\n"
         return s
 
-    def board_is_full(self): #checks if the board is completely full
+    def board_is_full(self):
         for col in self.board[0]:
-            if (col == "."): return False #means there is still an empty position in the top row
-        return True #if the top row is full, then the entire board is full
+            if (col == "."): return False
+        return True
     
     def check_for_win(self, move_type="insert"):
-      # Checks if there is a winning condition on the board
-      # move_type is important to handle the special "pop" rule
-      o_wins = False
-      x_wins = False
+        o_wins = False
+        x_wins = False
 
-    # check rows
-      for row in range(len(self.board)):
-        if check(self.board[row], "O"):
-            o_wins = True
-        if check(self.board[row], "X"):
-            x_wins = True
-
-    # check columns
-      for col in range(len(self.board[0])):
-        cur_col = []
         for row in range(len(self.board)):
-            cur_col.append(self.board[row][col])
+            if check(self.board[row], "O"): o_wins = True
+            if check(self.board[row], "X"): x_wins = True
 
-        if check(cur_col, "O"):
-            o_wins = True
-        if check(cur_col, "X"):
-            x_wins = True
+        for col in range(len(self.board[0])):
+            cur_col = []
+            for row in range(len(self.board)):
+                cur_col.append(self.board[row][col])
+            if check(cur_col, "O"): o_wins = True
+            if check(cur_col, "X"): x_wins = True
 
-    # check antidiagonal
-      for row in range(len(self.board) - 3):
-        for col in range(len(self.board[0]) - 3):
-            diag = []
-            for i in range(4):
-                diag.append(self.board[row + i][col + i])
+        for row in range(len(self.board) - 3):
+            for col in range(len(self.board[0]) - 3):
+                diag = []
+                for i in range(4):
+                    diag.append(self.board[row + i][col + i])
+                if check(diag, "O"): o_wins = True
+                if check(diag, "X"): x_wins = True
 
-            if check(diag, "O"):
-                o_wins = True
-            if check(diag, "X"):
-                x_wins = True
+        for row in range(3, len(self.board)):
+            for col in range(len(self.board[0]) - 3):
+                diag = []
+                for i in range(4):
+                    diag.append(self.board[row - i][col + i])
+                if check(diag, "O"): o_wins = True
+                if check(diag, "X"): x_wins = True
 
-    # check first diagonal
-      for row in range(3, len(self.board)):
-        for col in range(len(self.board[0]) - 3):
-            diag = []
-            for i in range(4):
-                diag.append(self.board[row - i][col + i])
+        if not o_wins and not x_wins:
+            return False
 
-            if check(diag, "O"):
-                o_wins = True
-            if check(diag, "X"):
-                x_wins = True
+        if move_type == "pop" and o_wins and x_wins:
+            self.end_game(1)
+            return True
 
-    # decides final result (no winner)
-      if not o_wins and not x_wins:
-        return False
+        if self.cur_player == "O" and o_wins:
+            self.end_game(1)
+            return True
 
-    # Special rule: if a pop move creates 4-in-row for both players
-    # the player who made the move wins
-      if move_type == "pop" and o_wins and x_wins:
-        self.end_game(1)
+        if self.cur_player == "X" and x_wins:
+            self.end_game(1)
+            return True
+
+        self.end_game(-1)
         return True
 
-    #If current players wins
-      if self.cur_player == "O" and o_wins:
-        self.end_game(1)
-        return True
-
-      if self.cur_player == "X" and x_wins:
-        self.end_game(1)
-        return True
-
-    # Otherwise, opponent wins
-      self.end_game(-1)
-      return True
-
-    
-    def invalid_command(self): #when a command is not recognized by the game
+    def invalid_command(self):
         clear_terminal()
         self.print_board()
         print("Invalid command. To check command rules, use COMMANDS.")
@@ -136,16 +113,15 @@ class game: #defines a new game
         input()
         return
     
-    def invalid_move(self): #when a correct command corresponds to a move that cannot be played at the current state of the game
+    def invalid_move(self):
         clear_terminal()
         self.print_board()
         print("Invalid move. To check game rules, use RULES")
         print("Use ENTER to PLAY AGAIN")
         input()
         return
-        
-    
-    def check_commands(self): #to check the command notation
+
+    def check_commands(self):
         clear_terminal()
         print("To remove a disc from the bottom row, use R followed by the column index between 1 and 7.")
         print("For example, R5 removes the bottom disc from the 5th column.")
@@ -163,10 +139,9 @@ class game: #defines a new game
         print()
         print("Press ENTER to return")
         input()
-        
         return
 
-    def check_rules(self): #to check the rules of the game
+    def check_rules(self):
         clear_terminal()
         print("POP OUT is a version of CONNECT 4 with some changes.")
         print()
@@ -182,15 +157,14 @@ class game: #defines a new game
         print()
         print("Press ENTER to return")
         input()
-       
         return
     
-    def end_game(self, result): #produces an ending message to the game (result 1 means cur_player won | 0 means draw | -1 means cur_player lost)
+    def end_game(self, result):
         clear_terminal()
         self.print_board()
         if (result == 1): print("Player " + self.cur_player + " is the winner!")
         elif (result == 0): print("It's a draw!")
-        else: #if the current player has lost, then change player. then, the new current player has won.
+        else:
             self.change_player()
             print("Player " + self.cur_player + " is the winner!")
         print()
@@ -201,45 +175,51 @@ class game: #defines a new game
                 self.restart(False)
                 return
             elif (command == "QUIT"):
-             self.running = False
-             return
+                self.running = False
+                return
 
-    def remove(self, col): #removes, if possible, a disc from the last row, in position col
+    def remove(self, col):
         try: col = int(col)
-        except: self.invalid_move()
-        if (col < 1 or col > 7): self.invalid_move()
+        except:
+            self.invalid_move()
+            return                          # ← correção
+        if (col < 1 or col > 7):
+            self.invalid_move()
+            return                          # ← correção
         elif (self.board[len(self.board) - 1][col - 1] == self.cur_player): 
-            for i in range(len(self.board) - 1, 0, -1): #shifts all discs above the removal one position down
+            for i in range(len(self.board) - 1, 0, -1):
                 self.board[i][col - 1] = self.board[i - 1][col - 1]
             self.board[0][col - 1] = "."
-            #check if this state has been visited before
             if (self.board_to_string() in self.board_history.keys()): self.board_history[self.board_to_string()] += 1
-            else: self.board_history[self.board_to_string()] = 1 #if not, mark it as visited once
+            else: self.board_history[self.board_to_string()] = 1
             if (self.check_for_win("pop")): return
             self.change_player()
             return
         else: self.invalid_move()
         return
     
-    def insert(self, col): #inserts, if possible, a disc in the column col
+    def insert(self, col):
         try: col = int(col)
-        except: self.invalid_move()
-        if (col < 1 or col > 7): self.invalid_move()
-        elif (self.board[0][col - 1] == "."): #if the column col still has space...
-            self.board[0][col - 1] = self.cur_player #insert disc on top of the column
+        except:
+            self.invalid_move()
+            return                          # ← correção
+        if (col < 1 or col > 7):
+            self.invalid_move()
+            return                          # ← correção
+        elif (self.board[0][col - 1] == "."):
+            self.board[0][col - 1] = self.cur_player
             i = 0
             clear_terminal()
             self.print_board()
-            while (i < 5 and self.board[i+1][col - 1] == "."): #make disc fall to the bottom
+            while (i < 5 and self.board[i+1][col - 1] == "."):
                 time.sleep(0.25)
                 self.board[i][col - 1] = "."
                 self.board[i+1][col - 1] = self.cur_player
                 i += 1
                 clear_terminal()
                 self.print_board()
-            #check if this state has been visited before
             if (self.board_to_string() in self.board_history.keys()): self.board_history[self.board_to_string()] += 1
-            else: self.board_history[self.board_to_string()] = 1 #if not, mark it as visited once
+            else: self.board_history[self.board_to_string()] = 1
             time.sleep(0.5)
             if (self.check_for_win("insert")): return
             self.change_player()
@@ -247,64 +227,49 @@ class game: #defines a new game
         else: self.invalid_move()
         return
     
-    def draw(self): # Allows declaring a draw under valid conditions
+    def draw(self):
+        if self.board_is_full():
+            self.end_game(0)
+        elif self.board_history[self.board_to_string()] >= 3:
+            self.end_game(0)
+        else:
+            self.invalid_move()
+        return
 
-     if self.board_is_full():
-        self.end_game(0)
-     elif self.board_history[self.board_to_string()] >= 3:
-        self.end_game(0)
-     else:
-        self.invalid_move()
-     return
-
-    def restart(self, rand): #restarts the game
+    def restart(self, rand):
         self.__init__(rand)
         self.make_a_move()
         return
         
     def make_a_move(self):
-     self.running = True  #Main game loop
+        self.running = True
 
-     while self.running:
-        clear_terminal()
-        self.print_board()
-        print("PLAYING NOW: " + self.cur_player)
+        while self.running:
+            clear_terminal()
+            self.print_board()
+            print("PLAYING NOW: " + self.cur_player)
 
-        command = input().strip()
+            command = input().strip()
 
-        #commands
-        if command.upper() == "COMMANDS":
-            self.check_commands()
-            continue
-
-        elif command.upper() == "RULES":
-            self.check_rules()
-            continue
-
-        elif command.upper() == "RESTART":
-            self.restart(False)
-            return
-
-        elif command.upper() == "QUIT":
-            self.running = False
-            return
-
-      
-        elif len(command) == 0:
-            continue
-
-        # remove piece
-        elif (command[0].upper() == "R") and len(command) == 2:
-            self.remove(command[1])
-
-        # remove piece
-        elif (command[0].upper() == "I") and len(command) == 2:
-            self.insert(command[1])
-
-        # draw
-        elif command.upper() == "D":
-            self.draw()
-
-        # invalid command
-        else:
-            self.invalid_command()
+            if command.upper() == "COMMANDS":
+                self.check_commands()
+                continue
+            elif command.upper() == "RULES":
+                self.check_rules()
+                continue
+            elif command.upper() == "RESTART":
+                self.restart(False)
+                return
+            elif command.upper() == "QUIT":
+                self.running = False
+                return
+            elif len(command) == 0:
+                continue
+            elif (command[0].upper() == "R") and len(command) == 2:
+                self.remove(command[1])
+            elif (command[0].upper() == "I") and len(command) == 2:
+                self.insert(command[1])
+            elif command.upper() == "D":
+                self.draw()
+            else:
+                self.invalid_command()
