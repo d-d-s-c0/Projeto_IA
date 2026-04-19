@@ -23,7 +23,7 @@ def monte_carlo_move(state, simulations_per_move=50):
         for _ in range(simulations_per_move):
             sim = state.clone()
             sim.apply_move(move)
-            total_score += random_playout(sim, root_player)  # ← única mudança
+            total_score += random_playout(sim, root_player)  
 
         average_score = total_score / simulations_per_move
 

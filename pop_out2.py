@@ -182,10 +182,10 @@ class game:
         try: col = int(col)
         except:
             self.invalid_move()
-            return                          # ← correção
+            return                          
         if (col < 1 or col > 7):
             self.invalid_move()
-            return                          # ← correção
+            return                          
         elif (self.board[len(self.board) - 1][col - 1] == self.cur_player): 
             for i in range(len(self.board) - 1, 0, -1):
                 self.board[i][col - 1] = self.board[i - 1][col - 1]
@@ -202,10 +202,10 @@ class game:
         try: col = int(col)
         except:
             self.invalid_move()
-            return                          # ← correção
+            return                         
         if (col < 1 or col > 7):
             self.invalid_move()
-            return                          # ← correção
+            return                         
         elif (self.board[0][col - 1] == "."):
             self.board[0][col - 1] = self.cur_player
             i = 0
