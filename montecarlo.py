@@ -1,18 +1,15 @@
 import random
-from popout_state import PopOutState
-
 
 def random_playout(state, root_player):
     simulation_state = state.clone()
-    while not simulation_state.is_terminal():
+    while not simulation_state.terminal:
         move = random.choice(simulation_state.get_valid_moves())
-        simulation_state.apply_move(move)
+        simulation_state.apply_move(move, printing = False)
     return simulation_state.get_result(root_player)
-
 
 def monte_carlo_move(state, simulations_per_move=50):
     legal_moves = state.get_valid_moves()
-    root_player = state.current_player
+    root_player = state.cur_player
 
     best_move = None
     best_score = -1
@@ -22,7 +19,7 @@ def monte_carlo_move(state, simulations_per_move=50):
 
         for _ in range(simulations_per_move):
             sim = state.clone()
-            sim.apply_move(move)
+            sim.apply_move(move, printing = False)
             total_score += random_playout(sim, root_player)  
 
         average_score = total_score / simulations_per_move
