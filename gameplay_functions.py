@@ -2,17 +2,17 @@ import time
 import os
 from montecarlo import monte_carlo_move
 
-def clear_terminal():
+def clear_terminal():                                               # Function that clears the terminal, to allow for a playable text interface.
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def invalid_command(game):
+def invalid_command(game):                                          # Gives the human player an explanation to why the move has been rejected.
     clear_terminal()
     print(game.board_to_string())
     print("Invalid command. To check command rules, use COMMANDS.")
     input("Use ENTER to PLAY AGAIN")
     return
 
-def check_commands():
+def check_commands():                                               # Gives an explanation of the commands to play the game.
     clear_terminal()
     print('''To remove a disc from the bottom row, use R followed by the column index between 1 and 7.
 For example, R5 removes the bottom disc from the 5th column.
@@ -29,7 +29,7 @@ To quit game, use QUIT.
     input("Press ENTER to return.")
     return
 
-def check_rules():
+def check_rules():                                                  # Gives an explanation about the rules of the game.
     clear_terminal()
     print(
 '''POP OUT is a version of CONNECT 4 with some changes.
@@ -47,7 +47,7 @@ ADDITIONAL RULES:
     input("Press ENTER to return")
     return
 
-def CVC_play(game):
+def CVC_play(game):                                                 # Coordinates plays between two computers.
     print(game.board_to_string())
     print("Current player:", game.cur_player)
     time.sleep(0.5)
@@ -58,7 +58,7 @@ def CVC_play(game):
     print(game.board_to_string())
     time.sleep(2)
 
-def PVC_play(game):
+def PVC_play(game):                                                 # Coordinates plays between a human and a computer.
     print(game.board_to_string())
     if (game.type_player == "human"): 
         print("Current player:", game.cur_player, " (human)")
@@ -85,7 +85,7 @@ def PVC_play(game):
         game.apply_move(move)
     print(game.board_to_string())
 
-def PVP_play(game):
+def PVP_play(game):                                                 # Coordinates plays between two human players.
     print(game.board_to_string())
     print("Current player:", game.cur_player)
     inp = input("Move: ")
@@ -104,7 +104,7 @@ def PVP_play(game):
         invalid_command(game)
     print(game.board_to_string())
 
-def win(game):
+def win(game):                                                      # Prints a final winning message adapted to each game ending.
     print(game.board_to_string())
     if game.winner: print("Winner:", game.winner)
     else: print("It's a draw!")
