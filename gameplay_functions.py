@@ -1,9 +1,30 @@
 import time
 import os
+import random
 from montecarlo import monte_carlo_move
 
 def clear_terminal():                                               # Function that clears the terminal, to allow for a playable text interface.
     os.system('cls' if os.name == 'nt' else 'clear')
+
+def check(line, char):                                              # Checks a line for a 4-in-row of a specific character.
+    count = 0                                                       # Variable that stores the "progression" of the 4-in-row sequence.
+    for cell in line:   
+        if cell == char:                                            # If the current cell is equal to that character,
+            count += 1                                              # add 1 to the count.
+            if count == 4: return True                              # If we reach a 4-in-row, return True.
+        else: count = 0                                             # When the current cell is different, we reset our progress.
+    return False                                                    # If no 4-in-rows were found, return False.
+
+def randomize_player(start_player = None):                          # Function to choose whether the computer or the human player starts (for player vs computer mode).
+    if start_player: return start_player                            # If there is a starting player previously defined, return it.
+    if random.randint(0,1) == 1: return "human"                     # Otherwise, make a random decision.
+    return "computer"
+
+def invalid_move(game):                                         # Gives the human player an explanation to why the move has been rejected.
+    clear_terminal()
+    print(game.board_to_string())
+    print("Invalid move. To check game rules, use RULES.")
+    input("Use ENTER to PLAY AGAIN")
 
 def invalid_command(game):                                          # Gives the human player an explanation to why the move has been rejected.
     clear_terminal()
@@ -53,10 +74,10 @@ def CVC_play(game):                                                 # Coordinate
     time.sleep(0.5)
     move = monte_carlo_move(game, simulations_per_move=20)
     print("Computer plays:", move)
-    time.sleep(2)
+    time.sleep(1.5)
     game.apply_move(move)
     print(game.board_to_string())
-    time.sleep(2)
+    time.sleep(1.5)
 
 def PVC_play(game):                                                 # Coordinates plays between a human and a computer.
     print(game.board_to_string())
@@ -81,7 +102,7 @@ def PVC_play(game):                                                 # Coordinate
         time.sleep(0.5)
         move = monte_carlo_move(game, simulations_per_move=20)
         print("Computer plays:", move)
-        time.sleep(2)
+        time.sleep(1.5)
         game.apply_move(move)
     print(game.board_to_string())
 

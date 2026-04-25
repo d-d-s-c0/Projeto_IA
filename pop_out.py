@@ -1,24 +1,6 @@
 import copy
-import os
-import random
 import time
-
-def clear_terminal():                                               # Function that clears the terminal, to allow for a playable text interface.
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-def check(line, char):                                              # Checks a line for a 4-in-row of a specific character.
-    count = 0                                                       # Variable that stores the "progression" of the 4-in-row sequence.
-    for cell in line:   
-        if cell == char:                                            # If the current cell is equal to that character,
-            count += 1                                              # add 1 to the count.
-            if count == 4: return True                              # If we reach a 4-in-row, return True.
-        else: count = 0                                             # When the current cell is different, we reset our progress.
-    return False                                                    # If no 4-in-rows were found, return False.
-
-def randomize_player(start_player = None):                          # Function to choose whether the computer or the human player starts (for player vs computer mode).
-    if start_player: return start_player                            # If there is a starting player previously defined, return it.
-    if random.randint(0,1) == 1: return "human"                     # Otherwise, make a random decision.
-    return "computer"
+from gameplay_functions import *
 
 class Pop_Out():                                                    # The class which represents an instance of our Pop Out game.
     def __init__(self, board = None, cur_player = "O", board_history = None, winner = None, terminal = False):
@@ -109,14 +91,14 @@ class Pop_Out():                                                    # The class 
 
     def insert(self, col, printing):                                # Performs an "insert" move.
         c = col - 1
-        if self.board[0][c] != ".": self.invalid_move()             # If the column is full already, declare the move invalid.
+        if self.board[0][c] != ".": invalid_move(self)              # If the column is full already, declare the move invalid.
         self.board[0][c] = self.cur_player                          # Else, insert current player's piece at the top...
         row = 0
         while row < 5 and self.board[row + 1][c] == ".":            # and let it fall until it lands on another piece, or the end of the board.
             if (printing):                                          # Produces the animation of the fall, which will not be seen during searching phase of MCTS.
                 clear_terminal()
                 print(self.board_to_string())
-                time.sleep(0.25)
+                time.sleep(0.125)
             self.board[row][c] = "."
             self.board[row + 1][c] = self.cur_player
             row += 1
@@ -129,14 +111,15 @@ class Pop_Out():                                                    # The class 
     def remove(self, col, printing):                                # Performs a "remove" move.
         c = col - 1
         if self.board[5][c] != self.cur_player: 
-            self.invalid_move()                                     # If the bottom piece does not belong to the player, declare move as invalid.
+            invalid_move(self)                                      # If the bottom piece does not belong to the player, declare move as invalid.
             return
         for row in range(5, 0, -1):                                 # Else, remove piece and let the ones above it fall down 1 place.
             if (printing):                                          # Produces the animation of the fall, which will not be seen during searching phase of MCTS.
                 clear_terminal()
                 print(self.board_to_string())
-                time.sleep(0.25)
+                time.sleep(0.125)
             self.board[row][c] = self.board[row - 1][c]
+            self.board[row-1][c] = "."
         self.board[0][c] = "."
         if (printing): clear_terminal()
         self.update_terminal_status()                               # Checks if this "remove" has produced a win...
@@ -144,8 +127,7 @@ class Pop_Out():                                                    # The class 
             self.change_player()
             self.register_state()
 
-    def apply_move(self, move, printing = True):                    # Reads a given move and executes the corresponding action. 
-        if self.terminal: self.invalid_game()                       # No more moves allowed if the game is finished!
+    def apply_move(self, move, printing = True):                    # Reads a given move and executes the corresponding action.                      
         kind, value = move[0], move[1]
         if kind == "I":                                             # Perform "insert"
             self.insert(value, printing)                            
@@ -155,19 +137,9 @@ class Pop_Out():                                                    # The class 
             if self.board_is_full() or self.board_history.get(self.board_to_string(), 0) >= 3:
                 self.winner = None
                 self.terminal = True                                # and end the game,
-            else: self.invalid_move()                               # unless the conditions for a draw have not been met.
-
-    def invalid_move(self):                                         # Gives the human player an explanation to why the move has been rejected.
-        clear_terminal()
-        print(self.board_to_string())
-        print("Invalid move. To check game rules, use RULES")
-        input("Use ENTER to PLAY AGAIN")
-
-    def invalid_game(self):                                         # Raises error to check for bugs in our code.
-        raise ValueError("Game state does not allow this operation.")
+            else: invalid_move(self)                                # unless the conditions for a draw have not been met.
         
     def get_result(self, player):                                   # Returns the result of the game as a "reward" value for MCTS to evaluate the path
-        if not self.terminal: self.invalid_game()
         if self.winner is None: return 0.5
         if self.winner == player: return 1.0
         return 0.0

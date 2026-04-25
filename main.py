@@ -5,18 +5,14 @@ import time
 
 while True:
     clear_terminal()
-    print("Welcome to POP OUT!")
-    print()
-    print("1. CHECK COMMANDS\n2. CHECK RULES\n3. PLAY\n4. EXIT")
+    print("Welcome to POP OUT!\n\n1. CHECK COMMANDS\n2. CHECK RULES\n3. PLAY\n4. EXIT")
     match(input().strip()):    
         case "1": check_commands()                                  # Shows the available commands. 
         case "2": check_rules()                                     # Shows the rules of the game.
         case "3":
             while True:
                 clear_terminal()
-                print("Select game mode:")
-                print()
-                print("1. PLAYER VS PLAYER\n2. PLAYER VS COMPUTER\n3. COMPUTER VS COMPUTER\n4. RETURN TO MENU")
+                print("Select game mode:\n\n1. PLAYER VS PLAYER\n2. PLAYER VS COMPUTER\n3. COMPUTER VS COMPUTER\n4. RETURN TO MENU")
                 match(input().strip()):
                     case "1":                                       # Starts game between two human players.  
                         clear_terminal()
