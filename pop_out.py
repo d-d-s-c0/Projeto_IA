@@ -11,6 +11,8 @@ class Pop_Out():                                                    # The class 
         self.board_history = copy.deepcopy(board_history) if board_history else {self.board_to_string(): 1}
         self.winner = winner
         self.terminal = terminal                                    # If the game is terminal, then no more moves can be done, and its winner (or draw) is defined.
+        self.features = [self.board,self.cur_player,self.board_history,self.winner,self.terminal]
+        self.feature_names = ["board","player","history","winner","terminal"]
 
     def clone(self):                                                # Function that clones a Pop Out game, to be used for Monte Carlo Tree Search
         return Pop_Out(board = self.board,                          # Simply creates a new game with all of the exact characteristics of the previous one

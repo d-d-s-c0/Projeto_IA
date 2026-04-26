@@ -3,6 +3,38 @@ from gameplay_functions import *
 import sys
 import time
 
+def select_simulations():
+    num_simulations = None
+    while not num_simulations:
+        print("Introduce a number of simulations between 10 and 1000:")
+        try: 
+            num_simulations = int(input())
+            if (num_simulations < 10 or num_simulations > 1000): 
+                num_simulations = None
+                print("Number outside of selection range. Returning to SIMULATIONS SELECTION...")
+                time.sleep(2)
+        except:
+            print("Not a readable number. Returning to SIMULATIONS SELECTION...")
+            time.sleep(2)
+    return num_simulations
+
+def select_algorithm(num = 1):
+    algorithm = None
+    num_simulations = None
+    while not algorithm:
+        print(f"Select algorithm for COMPUTER PLAYER {num}:\n\n1. Monte Carlo Tree Search (MCTS)\n2. Decision Trees")
+        match(input().strip()):
+            case "1": 
+                algorithm = "MCTS"
+                num_simulations = select_simulations()
+            case "2": 
+                algorithm = "Decision Trees"
+            case _:
+                clear_terminal()
+                print("Invalid command! Returning to ALGORITHM SELECTION...")
+                time.sleep(2)
+    return algorithm, num_simulations   
+
 while True:
     clear_terminal()
     print("Welcome to POP OUT!\n\n1. CHECK COMMANDS\n2. CHECK RULES\n3. PLAY\n4. EXIT")
@@ -15,7 +47,6 @@ while True:
                 print("Select game mode:\n\n1. PLAYER VS PLAYER\n2. PLAYER VS COMPUTER\n3. COMPUTER VS COMPUTER\n4. RETURN TO MENU")
                 match(input().strip()):
                     case "1":                                       # Starts game between two human players.  
-                        clear_terminal()
                         game = Pop_Out()
                         while not game.terminal:
                             clear_terminal()
@@ -24,20 +55,25 @@ while True:
                         win(game)
                         
                     case "2":                                       # Starts game between a human and a computer.
-                        clear_terminal()
+                        algorithm, num_simulations = select_algorithm()
                         game = CVP_Pop_Out()
                         while not game.terminal:
                             clear_terminal()
-                            PVC_play(game)
+                            PVC_play(game, algorithm, num_simulations)
                         clear_terminal()
                         win(game)
 
                     case "3":                                       # Starts game between two computers.
-                        clear_terminal()
+                        algorithm = ()
+                        num_simulations = ()
+                        for a in [0,1]:
+                            algorithm[a], num_simulations[a] = select_algorithm(a+1)
                         game = Pop_Out()
+                        a = 0
                         while not game.terminal: 
                             clear_terminal()
-                            CVC_play(game)
+                            CVC_play(game, algorithm[a], num_simulations[a])
+                            a = (a+1)%2
                         clear_terminal()
                         win(game)
 

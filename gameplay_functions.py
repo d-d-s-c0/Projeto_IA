@@ -68,18 +68,21 @@ ADDITIONAL RULES:
     input("Press ENTER to return")
     return
 
-def CVC_play(game):                                                 # Coordinates plays between two computers.
+def CVC_play(game, algorithm, num_simulations):                                                 # Coordinates plays between two computers.
     print(game.board_to_string())
     print("Current player:", game.cur_player)
     time.sleep(0.5)
-    move = monte_carlo_move(game, simulations_per_move=20)
+    if algorithm == "MCTS":
+        move = monte_carlo_move(game, num_simulations)
+    else: ########################################################################TODO
+        move = monte_carlo_move(game, num_simulations)
     print("Computer plays:", move)
     time.sleep(1.5)
     game.apply_move(move)
     print(game.board_to_string())
     time.sleep(1.5)
 
-def PVC_play(game):                                                 # Coordinates plays between a human and a computer.
+def PVC_play(game, algorithm, num_simulations):                                      # Coordinates plays between a human and a computer.
     print(game.board_to_string())
     if (game.type_player == "human"): 
         print("Current player:", game.cur_player, " (human)")
@@ -100,7 +103,10 @@ def PVC_play(game):                                                 # Coordinate
     else: 
         print("Current player:", game.cur_player, " (computer)")
         time.sleep(0.5)
-        move = monte_carlo_move(game, simulations_per_move=20)
+        if algorithm == "MCTS":
+            move = monte_carlo_move(game, num_simulations)
+        else: ##################################################################TODO
+            move = monte_carlo_move(game, num_simulations)
         print("Computer plays:", move)
         time.sleep(1.5)
         game.apply_move(move)
