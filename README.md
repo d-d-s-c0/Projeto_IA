@@ -33,6 +33,24 @@ Install Python:
 ## Execution Guide
 The game can be initialized by executing the file play.py. There, by interacting with text menus through the terminal, all of the game's features will be accessible, as well as the rules and commands. 
 
+## Code Architecture
+
+The implementation is divided into several files:
+
+- `pop_out.py`: contains the game engine and the `Pop_Out` class.
+
+- `gameplay_functions.py`: contains terminal interface functions and game mode helpers.
+
+- `montecarlo.py`: contains the Flat Monte Carlo agent.
+
+- `mcts_dataset.py`: contains the initial dataset generation procedure.
+
+- `main.py`: contains the menu and connects the playable modes.
+
+This separation allows the game logic, interface, algorithms, and dataset generation to be developed independently.
+
+
+
 ## Credits
 Diogo Sousa
 
