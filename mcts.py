@@ -1,3 +1,4 @@
+#standard version of monte carlo 
 import math
 import random
 
