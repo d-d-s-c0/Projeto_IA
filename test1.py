@@ -1,6 +1,6 @@
 #test the real version of monte carlo
 from pop_out import Pop_Out
-from mcts import mcts_move
+from mct1 import mcts_move
 
 state = Pop_Out()
 
