@@ -64,10 +64,16 @@ while True:
                         win(game)
 
                     case "3":                                       # Starts game between two computers.
-                        algorithm = ()
-                        num_simulations = ()
+                        #algorithm = ()
+                        #num_simulations = ()
+                        algorithm = []
+                        num_simulations = []
                         for a in [0,1]:
-                            algorithm[a], num_simulations[a] = select_algorithm(a+1)
+                            #algorithm[a], num_simulations[a] = select_algorithm(a+1)
+                            alg, sims = select_algorithm(a + 1)
+                            algorithm.append(alg)
+                            num_simulations.append(sims)
+
                         game = Pop_Out()
                         a = 0
                         while not game.terminal: 
