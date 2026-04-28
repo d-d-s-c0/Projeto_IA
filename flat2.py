@@ -38,3 +38,24 @@ def heuristic_guided_move(state):
         return random.choice(safe_moves)
 #  If no safe moves exist, fall back to a completely random move
     return random.choice(state.get_valid_moves())
+
+def monte_carlo_move_v2(state, simulations_per_move=50):
+    root_player = state.cur_player
+    best_move = None
+    best_score = -1
+
+    for candidate_move in state.get_valid_moves():
+        total_score = 0
+        for _ in range(simulations_per_move):
+            simulation_state = state.clone()
+            simulation_state.apply_move(candidate_move, printing=False)
+            while not simulation_state.terminal:
+                playout_move = heuristic_playout(simulation_state)
+                simulation_state.apply_move(playout_move, printing=False)
+            total_score += simulation_state.get_result(root_player)
+        average_score = total_score / simulations_per_move
+        if average_score > best_score:
+            best_score = average_score
+            best_move = candidate_move
+
+    return best_move
