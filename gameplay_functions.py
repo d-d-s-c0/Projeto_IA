@@ -1,7 +1,9 @@
 import time
 import os
 import random
-from montecarlo import monte_carlo_move
+from flat1 import monte_carlo_move
+from mcts1 import mcts_move
+from mct2 import mcts_move_v2
 
 def clear_terminal():                                               # Function that clears the terminal, to allow for a playable text interface.
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -72,8 +74,13 @@ def CVC_play(game, algorithm, num_simulations):                                 
     print(game.board_to_string())
     print("Current player:", game.cur_player)
     time.sleep(0.5)
-    if algorithm == "MCTS":
+    if algorithm == "Flat MC":
         move = monte_carlo_move(game, num_simulations)
+    elif algorithm == "MCTS v1":
+        move = mcts_move(game, iterations=num_simulations)
+    elif algorithm == "MCTS v2":
+        move = mcts_move_v2(game, iterations=num_simulations)
+        #it is missing more MCTS versions and decision trees
     else: ########################################################################TODO
         move = monte_carlo_move(game, num_simulations)
     print("Computer plays:", move)
@@ -103,8 +110,13 @@ def PVC_play(game, algorithm, num_simulations):                                 
     else: 
         print("Current player:", game.cur_player, " (computer)")
         time.sleep(0.5)
-        if algorithm == "MCTS":
+        if algorithm == "Flat MC":
             move = monte_carlo_move(game, num_simulations)
+        elif algorithm == "MCTS v1":
+            move = mcts_move(game, iterations=num_simulations)
+        elif algorithm == "MCTS V2":
+            move = mcts_move_v2(game, iterations=num_simulations)
+        #it is missing more MCTS versions and decision trees
         else: ##################################################################TODO
             move = monte_carlo_move(game, num_simulations)
         print("Computer plays:", move)
