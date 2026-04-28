@@ -7,7 +7,7 @@ def heuristic_playout(simulation_state):
 
 
 def heuristic_guided_move(state):
-    # List to store moves that do not immediately lose th in  in  e game
+    # List to store moves that do not immediately lose in the game
     safe_moves = []
 
     # Iterate through all possible valid moves

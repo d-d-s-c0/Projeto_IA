@@ -35,7 +35,7 @@ def select_algorithm(num = 1):
             case "3": 
                 algorithm = "MCTS v1"
                 num_simulations = select_simulations()
-            case "3":
+            case "4":
                 algorithm = "MCTS v2"
                 num_simulations = select_simulations()
             #it is missing more MCTS versions and decision trees
