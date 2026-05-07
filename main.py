@@ -2,6 +2,7 @@ from pop_out import Pop_Out, CVP_Pop_Out
 from gameplay_functions import *
 from mcts1 import mcts_move        # MCTS V1 (standard)
 from mct2 import mcts_move_v2      #MCTS v2 (no repetitions)
+from mcts3 import mcts_move_v3
 import sys
 import time
 
@@ -24,7 +25,7 @@ def select_algorithm(num = 1):
     algorithm = None
     num_simulations = None
     while not algorithm:
-        print(f"Select algorithm for COMPUTER PLAYER {num}:\n\n1. Flat Monte Carlo v1\n2. Flat MCT v2\n3. MCTS v1(standard)\n4. MCTS v2")
+        print(f"Select algorithm for COMPUTER PLAYER {num}:\n\n1. Flat Monte Carlo v1\n2. Flat MCT v2\n3. MCTS v1(standard)\n4. MCTS v2\n5. MCTS v3")
         match(input().strip()):
             case "1": 
                 algorithm = "Flat MC v1"
@@ -37,6 +38,9 @@ def select_algorithm(num = 1):
                 num_simulations = select_simulations()
             case "4":
                 algorithm = "MCTS v2"
+                num_simulations = select_simulations()
+            case "5":
+                algorithm = "MCTS v3"
                 num_simulations = select_simulations()
             #it is missing more MCTS versions and decision trees
             case _:
