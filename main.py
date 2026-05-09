@@ -28,12 +28,8 @@ def select_algorithm(num = 1):
     algorithm = None
     num_simulations = None
     while not algorithm:
-<<<<<<< HEAD
         clear_terminal()
         print(f"Select algorithm for COMPUTER PLAYER {num}:\n\n1. Flat Monte Carlo v1\n2. Flat MCT v2\n3. MCTS v1(standard)\n4. MCTS v2")
-=======
-        print(f"Select algorithm for COMPUTER PLAYER {num}:\n\n1. Flat Monte Carlo v1\n2. Flat MCT v2\n3. MCTS v1(standard)\n4. MCTS v2\n5. MCTS v3")
->>>>>>> 1c9e3f059b1363c72e159a8c3b9becbd1b9c2b25
         match(input().strip()):
             case "1": 
                 algorithm = "Flat MC v1"
