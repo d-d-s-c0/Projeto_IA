@@ -8,14 +8,17 @@ import time
 def select_simulations():
     num_simulations = None
     while not num_simulations:
+        clear_terminal()
         print("Introduce a number of simulations between 10 and 1000:")
         try: 
             num_simulations = int(input())
             if (num_simulations < 10 or num_simulations > 1000): 
                 num_simulations = None
+                clear_terminal()
                 print("Number outside of selection range. Returning to SIMULATIONS SELECTION...")
                 time.sleep(2)
         except:
+            clear_terminal()
             print("Not a readable number. Returning to SIMULATIONS SELECTION...")
             time.sleep(2)
     return num_simulations
@@ -24,6 +27,7 @@ def select_algorithm(num = 1):
     algorithm = None
     num_simulations = None
     while not algorithm:
+        clear_terminal()
         print(f"Select algorithm for COMPUTER PLAYER {num}:\n\n1. Flat Monte Carlo v1\n2. Flat MCT v2\n3. MCTS v1(standard)\n4. MCTS v2")
         match(input().strip()):
             case "1": 
