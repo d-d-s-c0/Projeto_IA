@@ -52,7 +52,6 @@ This separation allows the game logic, interface, algorithms, and dataset genera
 
 
 ## Credits
-Diogo Sousa
 
 Joana Antunes
 
